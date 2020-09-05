@@ -57,10 +57,14 @@ export const plugin: PluginFunction<PluginConfig> = async (_schema, documents, c
 
           const variablesType = hasVariables ? nameWithOperation + "Variables" : "never";
 
+          const variablesOptions = hasVariables ? `& { variables: ${variablesType} }` : "";
+
+          const defaultOptions = hasVariables ? "" : "= {}";
+
           switch (operation) {
             case "query": {
               return `
-              export const ${name}ClientQuery = (opts: Omit<QueryBaseOptions<${variablesType}>, "query"> & { variables: ${variablesType} }) => {
+              export const ${name}ClientQuery = (opts: Omit<QueryBaseOptions<${variablesType}>, "query"> ${variablesOptions} ${defaultOptions}) => {
                 return ${clientName}.query<${nameWithOperation}, ${variablesType}>({
                   query: ${nameUppercase}Document,
                   ...opts
@@ -71,7 +75,7 @@ export const plugin: PluginFunction<PluginConfig> = async (_schema, documents, c
             }
             case "mutation": {
               return `
-              export const ${name}ClientMutation = (opts: Omit<MutationOptions<${nameWithOperation},${variablesType}>, "mutation"> & { variables: ${variablesType} }) => {
+              export const ${name}ClientMutation = (opts: Omit<MutationOptions<${nameWithOperation},${variablesType}>, "mutation"> ${variablesOptions} ${defaultOptions}) => {
                 return ${clientName}.mutate<${nameWithOperation}, ${variablesType}>({
                   mutation: ${nameUppercase}Document,
                   ...opts
@@ -81,7 +85,7 @@ export const plugin: PluginFunction<PluginConfig> = async (_schema, documents, c
             }
             case "subscription": {
               return `
-              export const ${name}ClientSubscribe = (opts: Omit<SubscriptionOptions<${variablesType}>, "query"> & { variables: ${variablesType} }) => {
+              export const ${name}ClientSubscribe = (opts: Omit<SubscriptionOptions<${variablesType}>, "query"> ${variablesOptions} ${defaultOptions}) => {
                 return ${clientName}.subscribe<${nameWithOperation}, ${variablesType}>({
                   query: ${nameUppercase}Document,
                   ...opts
