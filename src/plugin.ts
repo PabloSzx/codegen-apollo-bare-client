@@ -45,7 +45,7 @@ export const plugin: PluginFunction<PluginConfig> = async (_schema, documents, c
 
   const importClient = config.apolloClientImport;
   const clientName = config.apolloClientName || "client";
-  const ApolloTypes = `import type { QueryBaseOptions, MutationOptions, SubscriptionOptions } from "@apollo/client";`;
+  const ApolloTypes = `import type { QueryOptions, MutationOptions, SubscriptionOptions } from "@apollo/client";`;
 
   return {
     prepend: [importClient, ApolloTypes],
@@ -64,7 +64,7 @@ export const plugin: PluginFunction<PluginConfig> = async (_schema, documents, c
           switch (operation) {
             case "query": {
               return `
-              export const ${name}ClientQuery = (opts: Omit<QueryBaseOptions<${variablesType}>, "query"> ${variablesOptions} ${defaultOptions}) => {
+              export const ${name}ClientQuery = (opts: Omit<QueryOptions<${variablesType}>, "query"> ${variablesOptions} ${defaultOptions}) => {
                 return ${clientName}.query<${nameWithOperation}, ${variablesType}>({
                   query: ${nameUppercase}Document,
                   ...opts

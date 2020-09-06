@@ -57,7 +57,7 @@ Reusing the `typescript` and `typescript-operations` generated code, it will gen
 
 ```ts
 export const postsClientQuery = (
-  opts: Omit<QueryBaseOptions<PostsQueryVariables>, "query"> & {
+  opts: Omit<QueryOptions<PostsQueryVariables>, "query"> & {
     variables: PostsQueryVariables;
   }
 ) => {
